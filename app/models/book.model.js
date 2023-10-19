@@ -1,6 +1,5 @@
 const sql = require("./db")
 const Book = function(book){
-    this.booksid = books.booksid;
     this.title = books.title;
     this.author = books.author;
     this.price = books.price;
@@ -9,8 +8,8 @@ const Book = function(book){
     this.quantity = books.quantity;
     this.img = books.img;
 }
-Book.checkBookId = (id_books, result)=>{
-    sql.query("SELECT * FROM books WHERE id = '"+id_books+"'",(err,res)=>{
+Book.checkBook = (id, result)=>{
+    sql.query(`SELECT * FROM books WHERE id = ${id}`,(err,res)=>{
         if(err){
             console.log("Error: "+err);
             result(err,null);
@@ -47,7 +46,20 @@ Book.getAllBook = (result)=>{
         result(null, res);
     })
 };
-//const, var, let => function scope
-
+Book.deleteById = (id, result) => {
+    sql.query('DELETE FROM books WHERE id = ?', id, (err, res) => {
+        if (err) {
+            console.log('Error: ' + err);
+            result(err, null);
+            return;
+        }
+        if (res.affectedRows == 0) {
+            result({ kind: 'not_found' }, null);
+            return;
+        }
+        console.log('Deleted books with id: ' + id);
+        result(null, res);
+    });
+};
 
 module.exports = Book;
